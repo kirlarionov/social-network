@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Typography, Box, Paper, IconButton, Link, Button } from '@mui/material'
+import { Typography, Box, Paper, IconButton, Link, Button, Pagination } from '@mui/material'
 import { Delete, Edit } from '@mui/icons-material'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -51,9 +51,11 @@ function Articles() {
    const [editMode, setEditMode] = useState('false')
    const [editModeId, setEditModeId] = useState(null)
    const [editArticleText, setEditArticleText] = useState('')
-
+   const [currentPage, setCurrentPage] = useState(1)
+   const [articlesPerPage] = useState(3)
 
    const { articles, setArticles } = useContext(Context)
+
 
    const applyEditArticleAlert = useCallback(() => toast.success('Article edit applied!'), [])
    const ApplyEditToast = () => (
@@ -101,16 +103,26 @@ function Articles() {
    }, [editArticleText, applyEditArticleAlert])
 
 
-   const changeArticleText = useCallback(e => setEditArticleText(e.target.innerText), [])
+   const changeArticleText = useCallback(e => {
+      setEditArticleText(e.target.innerText)
+   }, [])
 
 
    const deleteArticle = useCallback(e => {
       e.stopPropagation()
       const id = e.currentTarget.dataset.id
-      const currentArticles = Object.values(articles).filter(article => article.id !== id)
+      const filterArticles = Object.values(articles).filter(article => article.id !== id)
       removeArticle(id)
-         .then(setArticles(currentArticles))
+         .then(setArticles(filterArticles))
    }, [articles, setArticles])
+
+
+   //                               Paginate
+   const COUNT_PAGE = Math.ceil(Object.values(articles).length / articlesPerPage)
+   const lastArticleIndex = currentPage * articlesPerPage
+   const firstArticleIndex = lastArticleIndex - articlesPerPage
+   const currentArticles = Object.values(articles).slice(firstArticleIndex, lastArticleIndex)
+   const setPage = useCallback(e => setCurrentPage(e.target.innerText), [])
 
 
    const visibleEditBlock = { visibility: 'visible' }
@@ -136,7 +148,7 @@ function Articles() {
       <Box>
          <Typography variant='h3' sx={{ textAlign: 'center', padding: '10px' }} paragraph>"Articles"</Typography>
 
-         {Object.values(articles).map((article, index) => {
+         {currentArticles.map((article, index) => {
             return (
                <ArticleBox
                   elevation={readMoreId === article.id ? 12 : 4}
@@ -193,6 +205,14 @@ function Articles() {
                </ArticleBox>
             )
          })}
+         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Pagination
+               onClick={setPage}
+               count={COUNT_PAGE}
+               defaultPage={1}
+               variant="outlined"
+               shape="rounded" />
+         </Box>
          <ApplyEditToast />
       </Box >
    )

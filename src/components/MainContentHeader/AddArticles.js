@@ -29,7 +29,6 @@ const ErrorMessage = styled(Typography)`
 `
 
 function AddArticles({ MyButton }) {
-
    const [showAddArticleBox, setShowAddArticleBox] = useState(false)
    const [articleTitle, setArticleTitle] = useState('')
    const [articleText, setArticleText] = useState('')
