@@ -81,45 +81,48 @@ const Slider = () => {
 
 
    //? Нужно эти функции оборачивать в useCallback?
-   const prevSlide = (e) => {
-      e.stopPropagation()
-      setCurrentSlide(currentSlide === 0 ? length - 1 : currentSlide - 1)
-      setLeftSlide(leftSlide === 0 ? length - 1 : leftSlide - 1)
-      setRightSlide(rightSlide === 0 ? length - 1 : rightSlide - 1)
-   }
 
-   const nextSlide = (e) => {
-      e.stopPropagation()
-      setCurrentSlide(currentSlide === length - 1 ? 0 : currentSlide + 1)
-      setLeftSlide(leftSlide === length - 1 ? 0 : leftSlide + 1)
-      setRightSlide(rightSlide === length - 1 ? 0 : rightSlide + 1)
-   }
+   const changeSlide = useCallback((e) => {
+      e.preventDefault()
+      const action = e.currentTarget.dataset.action
+      if (action === 'next') {
+         setCurrentSlide(currentSlide === length - 1 ? 0 : currentSlide + 1)
+         setLeftSlide(leftSlide === length - 1 ? 0 : leftSlide + 1)
+         setRightSlide(rightSlide === length - 1 ? 0 : rightSlide + 1)
+      } else {
+         setCurrentSlide(currentSlide === 0 ? length - 1 : currentSlide - 1)
+         setLeftSlide(leftSlide === 0 ? length - 1 : leftSlide - 1)
+         setRightSlide(rightSlide === 0 ? length - 1 : rightSlide - 1)
+      }
+   }, [currentSlide, leftSlide, length, rightSlide])
+
 
    const onClickSlideCircle = useCallback(e => {
-      e.stopPropagation()
+      e.preventDefault()
       const index = +e.currentTarget.dataset.index
       setCurrentSlide(index)
       setLeftSlide(index === 0 ? length - 1 : index - 1)
       setRightSlide(index === length - 1 ? 0 : index + 1)
    }, [length])
 
-   //? Происходит обновление состояния размонтированного элемента (...при переключении страниц)
+
    useEffect(() => {
-      setInterval(() => {
-         setCurrentSlide(current => {
-            const res = current === length - 1 ? 0 : current + 1
-            return res
-         })
-         setLeftSlide(left => {
-            const res = left === length - 1 ? 0 : left + 1
-            return res
-         })
-         setRightSlide(right => {
-            const res = right === length - 1 ? 0 : right + 1
-            return res
-         })
-      }, 3000)
-      return () => clearInterval()
+      const intervalId =
+         setInterval(() => {
+            setCurrentSlide(current => {
+               const res = current === length - 1 ? 0 : current + 1
+               return res
+            })
+            setLeftSlide(left => {
+               const res = left === length - 1 ? 0 : left + 1
+               return res
+            })
+            setRightSlide(right => {
+               const res = right === length - 1 ? 0 : right + 1
+               return res
+            })
+         }, 3000)
+      return () => clearInterval(intervalId)
    }, [length])
 
 
@@ -127,15 +130,22 @@ const Slider = () => {
       <SliderBox>
 
          <NearestSlides>
-            <Box component='img' src={sliderData[leftSlide]} alt='slide' sx={{ width: '100%', height: '100%' }} />
+            <Box
+               component='img'
+               src={sliderData[leftSlide]}
+               alt='slide'
+               sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
+               onClick={changeSlide}
+               data-action='prev'
+            />
          </NearestSlides>
 
          <Box>
             <MainSlideContainer>
-               <ArrowBox left={0} onClick={prevSlide}>
+               <ArrowBox left={0} onClick={changeSlide} data-action='prev'>
                   <ArrowBackIosOutlined sx={{ color: 'white' }} />
                </ArrowBox>
-               <ArrowBox right={0} onClick={nextSlide}>
+               <ArrowBox right={0} onClick={changeSlide} data-action='next'>
                   <ArrowForwardIosOutlined sx={{ color: 'white' }} />
                </ArrowBox>
 
@@ -146,7 +156,6 @@ const Slider = () => {
                      </MainSlide>
                   )
                })}
-
             </MainSlideContainer>
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -165,7 +174,14 @@ const Slider = () => {
          </Box>
 
          <NearestSlides>
-            <Box component='img' src={sliderData[rightSlide]} alt='slide' sx={{ width: '100%', height: '100%' }} />
+            <Box
+               component='img'
+               src={sliderData[rightSlide]}
+               alt='slide'
+               sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
+               onClick={changeSlide}
+               data-action='next'
+            />
          </NearestSlides>
 
       </SliderBox>

@@ -9,10 +9,10 @@ import PageLinks from "./components/PageLinks"
 import Home from "./pages/Home"
 import Articles from "./pages/Articles"
 import Team from "./pages/Team"
-import { ArticleProvider } from './context'
+import { ArticleProvider } from './context-articles'
+import { MessagesProvider } from './context-messages'
 
-
-const drawerWidth = 280
+const DRAWER_WIDTH = 280
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
    ({ theme, open }) => ({
@@ -22,7 +22,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
          easing: theme.transitions.easing.sharp,
          duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: `-${drawerWidth}px`,
+      marginLeft: `-${DRAWER_WIDTH}px`,
       ...(open && {
          transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
@@ -41,33 +41,32 @@ const DrawerHeader = styled('div')(({ theme }) => ({
    justifyContent: 'flex-end',
 }))
 
-
 const App = () => {
-
    const [open, setOpen] = useState(true)
    const handleDrawerOpen = () => setOpen(!open)
 
-
    return (
       <ArticleProvider>
-         <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
+         <MessagesProvider>
+            <Box sx={{ display: 'flex' }}>
+               <CssBaseline />
 
-            <AppHeader open={open} handleDrawerOpen={handleDrawerOpen} />
-            <LeftSidebar open={open} DrawerHeader={DrawerHeader} />
-            <Main open={open}>
-               <DrawerHeader />
-               <MainContentHeader />
-               <PageLinks />
-               <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/articles" element={<Articles />} />
-                  <Route path="/team" element={<Team />} />
-               </Routes>
-            </Main>
+               <AppHeader open={open} handleDrawerOpen={handleDrawerOpen} />
+               <LeftSidebar open={open} DrawerHeader={DrawerHeader} />
+               <Main open={open}>
+                  <DrawerHeader />
+                  <MainContentHeader />
+                  <PageLinks />
+                  <Routes>
+                     <Route path="/" element={<Home />} />
+                     <Route path="/articles" element={<Articles />} />
+                     <Route path="/team" element={<Team />} />
+                  </Routes>
+               </Main>
 
-         </Box>
-      </ArticleProvider>
+            </Box>
+         </MessagesProvider>
+      </ArticleProvider >
    )
 }
 

@@ -10,9 +10,7 @@ import Notifications from './Notifications'
 import logo from '../../assets/image/logo.svg'
 import profile from '../../assets/image/profile.jpg'
 
-
-
-const drawerWidth = 280
+const DRAWER_WIDTH = 280
 
 const SideBarAvatar = styled(Box)`
    display: flex;
@@ -23,11 +21,9 @@ const SideBarAvatar = styled(Box)`
 `
 
 const LeftSidebar = ({ open, DrawerHeader }) => {
-
    const [anchorAccountMenu, setAnchorAccountMenu] = useState(null)
    const [profileStatus, setProfileStatus] = useState(localStorage.getItem('status') || 'Online')
    const [profileStatusColor, setProfileStatusColor] = useState()
-   const openAccountMenu = Boolean(anchorAccountMenu)
 
    const handleClick = event => setAnchorAccountMenu(event.currentTarget)
    const handleCloseAccountMenu = useCallback(() => setAnchorAccountMenu(null), [])
@@ -57,39 +53,45 @@ const LeftSidebar = ({ open, DrawerHeader }) => {
       }
    }, [profileStatus, handleCloseAccountMenu])
 
-
    return (
       <Drawer
          sx={{
-            width: drawerWidth,
+            width: DRAWER_WIDTH,
             flexShrink: 0,
             '& .MuiDrawer-paper': {
-               width: drawerWidth,
+               width: DRAWER_WIDTH,
                boxSizing: 'border-box'
             }
          }}
          variant="persistent"
          anchor="left"
-         open={open}>
+         open={open}
+      >
          <DrawerHeader sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#dce7ff' }}>
             <Box component='img' src={logo} alt="Logo" pl={2} />
             <Box>
                <Notifications />
                <IconButton
                   id="fade-button"
-                  aria-controls={openAccountMenu ? 'fade-menu' : undefined}
+                  aria-controls={!!anchorAccountMenu ? 'fade-menu' : undefined}
                   aria-haspopup="true"
-                  aria-expanded={openAccountMenu ? 'true' : undefined}
-                  onClick={handleClick}>
-                  <Badge color={profileStatusColor} variant="dot" overlap="circular" badgeContent=" "
-                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                  aria-expanded={!!anchorAccountMenu ? 'true' : undefined}
+                  onClick={handleClick}
+               >
+                  <Badge
+                     color={profileStatusColor}
+                     variant="dot"
+                     overlap="circular"
+                     badgeContent=" "
+                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  >
                      <AccountCircleOutlined />
                   </Badge>
                </IconButton>
                <AccountMenu
                   handleCloseAccountMenu={handleCloseAccountMenu}
                   anchorAccountMenu={anchorAccountMenu}
-                  openAccountMenu={openAccountMenu}
+                  openAccountMenu={!!anchorAccountMenu}
                   getProfileStatus={getProfileStatus}
                />
 
