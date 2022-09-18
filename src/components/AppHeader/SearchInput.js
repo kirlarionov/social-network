@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles'
 import { IconButton, Collapse, Box, Typography, MenuItem } from '@mui/material'
 import { SearchRounded, Close } from '@mui/icons-material'
 
-
 const SearchWrapper = styled(Collapse)`
    position: absolute;
    top: 0;
@@ -56,44 +55,27 @@ const searchArray = [
    'Toto'
 ]
 
-
-function SearchInput() {
-
+const SearchInput = () => {
    const [checked, setChecked] = useState(false)
    const [inputValue, setInputValue] = useState('')
    const [searchVariants, setSearchVariants] = useState(null)
 
    const handleOpen = () => setChecked(true)
+
    const handleClose = () => {
       setChecked(false)
       setInputValue('')
    }
 
-
    useEffect(() => {
-      // let filterArray = []
-      // const inputWordArray = inputValue.toLowerCase()
-
-      // if (inputWordArray.length) {
-
-      //    for (let i = 0; i < searchArray.length; i++) {
-      //       let wordVariant = searchArray[i].toLowerCase()
-
-      //       if (inputWordArray === wordVariant.slice(0, inputWordArray.length)) {
-      //          let newWord = wordVariant[0].toUpperCase() + wordVariant.slice(1)
-      //          filterArray.push(newWord)
-      //       }
-      //    }
-      // }
-      // setSearchVariants(filterArray)
-
-      setSearchVariants(searchArray.filter(item => item.toUpperCase().includes(inputValue.toUpperCase())))
-
+      setSearchVariants(
+         searchArray.filter(item => item.toUpperCase().includes(inputValue.toUpperCase()))
+      )
    }, [inputValue, setInputValue])
 
-
-   const changeInputValue = useCallback(e => setInputValue(e.currentTarget.value), [])
-
+   const changeInputValue = useCallback(e => (
+      setInputValue(e.currentTarget.value)
+   ), [])
 
    return (
       <Box >
@@ -110,7 +92,8 @@ function SearchInput() {
                      placeholder='Search for a make or model of a car      ("toyota")'
                      value={inputValue}
                      onChange={changeInputValue}
-                     style={{ fontSize: '16px', width: '100%' }} />
+                     style={{ fontSize: '16px', width: '100%' }}
+                  />
                </Box>
                <IconButton onClick={handleClose}>
                   <Close style={{ width: '30px', height: '30px' }} />

@@ -6,9 +6,8 @@ import SendIcon from '@mui/icons-material/Send'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { addArticle } from '../../services'
-import { Context } from '../../context'
-
-
+import { Context } from '../../context-articles'
+import CustomButton from '../CustomButton'
 
 const MessageBlock = styled(Paper)`
    position: absolute;
@@ -28,21 +27,27 @@ const ErrorMessage = styled(Typography)`
    left: 80px;
 `
 
-function AddArticles({ MyButton }) {
+function AddArticles() {
+   const { setArticles } = useContext(Context)
    const [showAddArticleBox, setShowAddArticleBox] = useState(false)
    const [articleTitle, setArticleTitle] = useState('')
    const [articleText, setArticleText] = useState('')
    const [articleAuthor, setArticleAuthor] = useState('')
    const [emptyTextField, setEmptyTextField] = useState(false)
-   const { setArticles } = useContext(Context)
+   const rootEl = useRef(null)
 
    const handleChangeArticle = event => setArticleText(event.target.value)
    const handleChangeArticleTitle = event => setArticleTitle(event.target.value)
    const handleChangeArticleAuthor = event => setArticleAuthor(event.target.value)
 
-   const openSendArticleWindow = useCallback(() => setShowAddArticleBox(!showAddArticleBox), [showAddArticleBox])
+   const openSendArticleWindow = useCallback(() => (
+      setShowAddArticleBox(!showAddArticleBox)
+   ), [showAddArticleBox])
 
-   const successAddArticleAlert = useCallback(() => toast.success('Article added successfully!'), [])
+   const successAddArticleAlert = useCallback(() => (
+      toast.success('Article added successfully!')
+   ), [])
+
    const Toast = () => (
       <ToastContainer
          position="bottom-right"
@@ -64,13 +69,8 @@ function AddArticles({ MyButton }) {
       const { important, ...data } = Object.fromEntries(formData)
 
       if (articleTitle && articleText && articleAuthor) {
-         addArticle({ ...data, important: important === 'important' })
-            .then(artical => setArticles(prevState => {
-               return {
-                  ...prevState,
-                  [artical.id]: artical
-               }
-            }))
+         addArticle({ ...data, important: important === 'important', createdAt: new Date() })
+            .then(artical => setArticles(prevState => [artical, ...prevState]))
             .then(() => {
                setArticleText('')
                setArticleTitle('')
@@ -84,91 +84,90 @@ function AddArticles({ MyButton }) {
       }
    }, [setShowAddArticleBox, articleTitle, articleText, articleAuthor, setArticles, successAddArticleAlert])
 
-
-   const rootEl = useRef(null)
-
    useEffect(() => {
       const onClick = e => rootEl.current.contains(e.target) || setShowAddArticleBox(false)
       document.addEventListener('click', onClick)
       return () => document.removeEventListener('click', onClick)
    }, [setShowAddArticleBox])
 
-
    return (
       <Box sx={{ position: 'relative' }} ref={rootEl}>
-         <MyButton
+         <CustomButton
             onClick={openSendArticleWindow}
-            variant="contained">
+            variant="contained"
+         >
             <Mail sx={{ width: '18px', height: '18px', mr: 1 }} />
             <Typography variant='text'>Add article</Typography>
-         </MyButton>
+         </CustomButton>
 
-         {showAddArticleBox && (
-            <MessageBlock elevation={4}>
-               <Box sx={{ backgroundColor: '#4f46e5', p: '15px', color: 'white' }}>
-                  <Typography fontSize={17}>Add article</Typography>
-               </Box>
-
-               {emptyTextField && <ErrorMessage>ВНИМАНИЕ: все поля должны быть заполнены</ErrorMessage>}
-
-               <Box
-                  component='form'
-                  onSubmit={submitHandler}
-                  noValidate
-                  autoComplete="off">
-
-                  <Box sx={{ p: '15px' }}>
-
-                     <TextField
-                        name='author'
-                        value={articleAuthor}
-                        onChange={handleChangeArticleAuthor}
-                        type='text'
-                        id="input-with-sx"
-                        label="Your name"
-                        variant="standard"
-                        sx={{ width: '100%' }} />
-
-                     <TextField
-                        name='title'
-                        value={articleTitle}
-                        onChange={handleChangeArticleTitle}
-                        type='text'
-                        id="input-with-sx"
-                        label="Article title"
-                        variant="standard"
-                        sx={{ width: '100%' }} />
-
-                     <TextField
-                        name='text'
-                        type='text'
-                        id="standard-multiline-flexible"
-                        label="Your article text..."
-                        multiline
-                        maxRows={6}
-                        value={articleText}
-                        onChange={handleChangeArticle}
-                        variant="outlined"
-                        sx={{ width: '100%', mt: '20px' }}
-                     />
-
-                     <Box sx={{ display: 'flex', justifyContent: 'space-between', p: '10px 0 0' }}>
-                        <FormControlLabel
-                           name='important'
-                           value="important"
-                           control={<Switch color="primary" />}
-                           label="Mark as important:"
-                           labelPlacement="start"
-                        />
-                        <Button type='submit' variant="contained" endIcon={<SendIcon />}>
-                           Send
-                        </Button>
-                     </Box>
-
+         {
+            showAddArticleBox && (
+               <MessageBlock elevation={4}>
+                  <Box sx={{ backgroundColor: '#4f46e5', p: '15px', color: 'white' }}>
+                     <Typography fontSize={17}>Add article</Typography>
                   </Box>
-               </Box>
-
-            </MessageBlock>)
+                  {
+                     emptyTextField && <ErrorMessage>ATTENTION: all fields must be filled</ErrorMessage>
+                  }
+                  <Box
+                     component='form'
+                     onSubmit={submitHandler}
+                     noValidate
+                     autoComplete="off"
+                  >
+                     <Box sx={{ p: '15px' }}>
+                        <TextField
+                           name='author'
+                           value={articleAuthor}
+                           onChange={handleChangeArticleAuthor}
+                           type='text'
+                           id="input-with-sx"
+                           label="Your name"
+                           variant="standard"
+                           sx={{ width: '100%' }}
+                        />
+                        <TextField
+                           name='title'
+                           value={articleTitle}
+                           onChange={handleChangeArticleTitle}
+                           type='text'
+                           id="input-with-sx"
+                           label="Article title"
+                           variant="standard"
+                           sx={{ width: '100%' }}
+                        />
+                        <TextField
+                           name='text'
+                           type='text'
+                           id="standard-multiline-flexible"
+                           label="Your article text..."
+                           multiline
+                           maxRows={6}
+                           value={articleText}
+                           onChange={handleChangeArticle}
+                           variant="outlined"
+                           sx={{ width: '100%', mt: '20px' }}
+                        />
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', p: '10px 0 0' }}>
+                           <FormControlLabel
+                              name='important'
+                              value="important"
+                              control={<Switch color="primary" />}
+                              label="Mark as important:"
+                              labelPlacement="start"
+                           />
+                           <Button
+                              type='submit'
+                              variant="contained"
+                              endIcon={<SendIcon />}
+                           >
+                              Send
+                           </Button>
+                        </Box>
+                     </Box>
+                  </Box>
+               </MessageBlock>
+            )
          }
          <Toast />
       </Box >

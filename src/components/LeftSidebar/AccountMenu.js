@@ -5,7 +5,6 @@ import {
    AccountCircleOutlined, Circle, SettingsOutlined, ContactlessOutlined, Logout, ArrowRight
 } from '@mui/icons-material'
 
-
 const MyMenuItem = styled(MenuItem)`
    padding-top: 12px;
    padding-bottom: 12px;
@@ -15,14 +14,14 @@ const SubMenuCircle = styled(Circle)`
    width: 19px;
 `
 
-
-function AccountMenu({ handleCloseAccountMenu, anchorAccountMenu, openAccountMenu, getProfileStatus }) {
-
+const AccountMenu = ({ handleCloseAccountMenu, anchorAccountMenu, openAccountMenu, getProfileStatus }) => {
    const [anchorAccountMenuStatus, setnchorAccountMenuStatus] = useState(null)
-   const openAccountMenuStatus = Boolean(anchorAccountMenuStatus)
 
    const handleMouseEnter = event => setnchorAccountMenuStatus(event.currentTarget)
-   const handleCloseAccountMenuStatus = useCallback(() => setnchorAccountMenuStatus(null), [])
+
+   const handleCloseAccountMenuStatus = useCallback(() => (
+      setnchorAccountMenuStatus(null)
+   ), [])
 
    const handleActiveStatus = useCallback(e => {
       const status = e.currentTarget.childNodes[1].data
@@ -30,7 +29,6 @@ function AccountMenu({ handleCloseAccountMenu, anchorAccountMenu, openAccountMen
       handleCloseAccountMenuStatus()
       handleCloseAccountMenu()
    }, [getProfileStatus, handleCloseAccountMenu, handleCloseAccountMenuStatus])
-
 
    return (
       <Menu
@@ -73,7 +71,7 @@ function AccountMenu({ handleCloseAccountMenu, anchorAccountMenu, openAccountMen
             id="fade-menu-status"
             MenuListProps={{ 'aria-labelledby': 'fade-button' }}
             anchorEl={anchorAccountMenuStatus}
-            open={openAccountMenuStatus}
+            open={!!anchorAccountMenuStatus}
             onClose={handleCloseAccountMenuStatus}
             TransitionComponent={Fade}
             transformOrigin={{ horizontal: 'left', vertical: 'top' }}

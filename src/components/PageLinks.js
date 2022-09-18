@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
 
-
 const PageLink = styled(NavLink)`
    font-size: 20px;
    color: #29899b;
@@ -27,9 +26,7 @@ const Line = styled(Box)`
    background-color: #49b3c7;
 `
 
-function PageLinks() {
-
-   return (
+const PageLinks = () => (
       <>
          <Box>
             <PageLink to='/' >Home</PageLink>
@@ -39,6 +36,5 @@ function PageLinks() {
          <Line />
       </>
    )
-}
 
 export default PageLinks
