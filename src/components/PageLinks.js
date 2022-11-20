@@ -1,7 +1,7 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import React from "react"
+import { NavLink } from "react-router-dom"
+import { styled } from "@mui/material/styles"
+import { Box } from "@mui/material"
 
 const PageLink = styled(NavLink)`
    font-size: 20px;
@@ -11,13 +11,13 @@ const PageLink = styled(NavLink)`
    border: 1px solid #c5e4ea;
    border-bottom: 0;
    border-radius: 15px 15px 0 0;
-      &:hover {
-         background-color: #e4f8f9;
-         transition: all .3s;
-      }
-      &.active {
-         background-color: #e4f8f9;
-      }
+   &:hover {
+      background-color: #e4f8f9;
+      transition: all 0.3s;
+   }
+   &.active {
+      background-color: #e4f8f9;
+   }
 `
 const Line = styled(Box)`
    width: 100%;
@@ -27,14 +27,14 @@ const Line = styled(Box)`
 `
 
 const PageLinks = () => (
-      <>
-         <Box>
-            <PageLink to='/' >Home</PageLink>
-            <PageLink to='/articles'>Articles</PageLink>
-            <PageLink to='/team'>Team</PageLink>
-         </Box>
-         <Line />
-      </>
-   )
+   <>
+      <Box>
+         <PageLink to="/social-network">Home</PageLink>
+         <PageLink to="/social-network/articles">Articles</PageLink>
+         <PageLink to="/social-network/team">Team</PageLink>
+      </Box>
+      <Line />
+   </>
+)
 
 export default PageLinks
