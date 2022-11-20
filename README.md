@@ -8,7 +8,7 @@
 ## About
  In this App I got acquainted with MaterialUI, and implemented various functions (working with articles, messages, slider, statuses, etc.), following the example     https://angular-material.fusetheme.com
  
- Link to view this  App &#10143;  https://kirlarionov.github.io/social-network/team
+ Link to view this  App &#10143;  https://kirlarionov.github.io/social-network
 
 ## Technology stack
 <p>
